@@ -1,0 +1,342 @@
+ #include <Servo.h>
+
+ #define TIBIA 80
+  #define TIBIA1 100
+ #define DELAY 250
+ 
+ #define COXA_CCW 105
+ #define COXA_CW 70
+ #define COXA_S 90
+  
+ #define COXA_CWC 30
+ #define COXA_CCWC 75
+ #define COXA_CWA 100
+ #define COXA_CCWA 135
+/*
+~front~
+A  D
+B  E
+C  F
+~back~
+*/
+
+char data;
+int ABC_UP = 60;
+int ABC_DOWN = 110;
+
+int DEF_UP = 120;
+int DEF_DOWN = 70;
+
+Servo E_coxa;
+Servo E_femur;
+Servo E_tibia;
+
+Servo B_coxa;
+Servo B_femur;
+Servo B_tibia;
+
+Servo A_coxa;
+Servo A_femur;
+Servo A_tibia;
+
+Servo C_coxa;
+Servo C_femur;
+Servo C_tibia;
+
+Servo DF_coxa;
+Servo DF_femur;
+Servo DF_tibia;
+
+void setup() 
+{ 
+  Serial2.begin(9600); 
+  pinMode(1, OUTPUT);
+  pinMode(2, OUTPUT);
+  pinMode(3, OUTPUT);
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
+  pinMode(6, OUTPUT);
+  pinMode(7, OUTPUT);
+  pinMode(8, OUTPUT);
+  pinMode(9, OUTPUT);
+  pinMode(10, OUTPUT);
+  pinMode(11, OUTPUT);
+  pinMode(12, OUTPUT);
+  pinMode(13, OUTPUT);
+  pinMode(22, OUTPUT);
+
+  E_coxa.attach(2);
+  E_femur.attach(3);
+  E_tibia.attach(4);
+  B_coxa.attach(5);
+  B_femur.attach(6);
+  B_tibia.attach(7);
+  A_coxa.attach(8);
+  A_femur.attach(9);
+  A_tibia.attach(10);
+  C_coxa.attach(11);
+  C_femur.attach(12);
+  C_tibia.attach(13);   
+  DF_coxa.attach(44);
+  DF_femur.attach(45);
+  DF_tibia.attach(46);
+  
+  start();
+} 
+
+void loop() 
+{ 
+  //walkfwd();
+  if(Serial2.available() > 0)
+  {
+    data = Serial2.read();
+    Serial2.println(data);
+  }
+  else {
+    switch (data)
+    {
+      
+      case '1': //FORWARD ON
+       walkfwd();
+        break;
+        
+      case '2': //REVERSE ON
+        walkbwd();
+        break;
+        
+      case '3': // LEFT ON
+       turnleft();
+        break;
+        
+      case '4': // RIGHT ON
+       turnright();
+        break;
+       /* case '5': //FORWARD OFF
+        //start();
+        break;
+        
+      case '6': //REVERSE OFF
+        start();
+        break;
+        
+      case '7': // LEFT OFF
+        start();
+        break;
+        
+      case '8': // RIGHT OFF
+        start();
+        break;*/
+               
+      default: 
+        start();
+          break;
+    }
+    
+  }   
+}
+void tibia() {
+  A_tibia.write(TIBIA1);
+  C_tibia.write(115);
+  B_tibia.write(TIBIA1);
+  DF_tibia.write(TIBIA);
+  E_tibia.write(TIBIA);
+}
+void walkbwd() {
+  tibia();
+   delay(500);
+  b1();
+   delay(500);
+  b2();
+   delay(500);
+  b3();
+   delay(500);
+  b4();
+   delay(500);  
+}
+void walkfwd() {
+  tibia();
+  tri1();
+  delay(500);
+  tri2();
+   delay(500);
+  tri3();
+   delay(500);
+  tri4();
+   delay(500);
+}
+
+void turnleft() {
+  tibia();
+  l1();
+  l2();
+  l3();
+  l4();
+}
+
+void turnright() {
+  tibia();
+  r1();
+  r2();
+  r3();
+  r4();
+}
+void tri1() { 
+  C_coxa.write(COXA_CWC);
+  A_coxa.write(COXA_CWA);
+  E_coxa.write(COXA_CCW);
+  delay(DELAY);  
+  DF_coxa.write(COXA_CW);
+  B_coxa.write(COXA_CCW);
+  delay(DELAY);
+};
+void tri2() { 
+  A_femur.write(ABC_DOWN);
+  C_femur.write(ABC_DOWN);
+  E_femur.write(DEF_DOWN);
+  delay(DELAY);  
+  DF_femur.write(DEF_UP);
+  B_femur.write(ABC_UP);
+  delay(DELAY);
+};
+
+void tri3() {
+  A_coxa.write(COXA_CCWA);
+  C_coxa.write(COXA_CCWC);
+  E_coxa.write(COXA_CW);
+  delay(DELAY);
+  DF_coxa.write(COXA_CCW);
+  B_coxa.write(COXA_CW);
+  delay(DELAY);
+};
+void tri4() {
+  DF_femur.write(DEF_DOWN);
+  B_femur.write(ABC_DOWN);
+  delay(DELAY);
+  A_femur.write(ABC_UP);
+  C_femur.write(ABC_UP);
+  E_femur.write(DEF_UP);
+  delay(DELAY);
+};
+void b1() { 
+  A_coxa.write(COXA_CCWA);
+  C_coxa.write(COXA_CWC);
+  E_coxa.write(COXA_CW);
+  delay(DELAY);
+  DF_coxa.write(COXA_CCW);
+  B_coxa.write(COXA_CW);
+  delay(DELAY);
+};
+void b2() { 
+  A_femur.write(ABC_DOWN);
+  C_femur.write(ABC_DOWN);
+  E_femur.write(DEF_DOWN);
+  delay(DELAY);
+  DF_femur.write(DEF_UP);
+  B_femur.write(ABC_UP);
+  delay(DELAY);
+};
+
+void b3() {
+  A_coxa.write(COXA_CWA);
+  C_coxa.write(COXA_CCWC);
+  E_coxa.write(COXA_CCW);
+  delay(DELAY);
+  DF_coxa.write(COXA_CW);
+  B_coxa.write(COXA_CCW);
+  delay(DELAY);
+};
+void b4() { 
+  DF_femur.write(DEF_DOWN);
+  B_femur.write(ABC_DOWN);
+  delay(DELAY);
+  A_femur.write(ABC_UP);
+  C_femur.write(ABC_UP);
+  E_femur.write(DEF_UP);
+  delay(DELAY);
+};
+
+void l1() { 
+  A_coxa.write(COXA_CCW);
+  C_coxa.write(COXA_CCW);
+  E_coxa.write(COXA_CCW);
+  DF_coxa.write(COXA_CW);
+  B_coxa.write(COXA_CW);
+  delay(DELAY);
+};
+void l2() { 
+  A_femur.write(ABC_DOWN);
+  C_femur.write(ABC_DOWN);
+  E_femur.write(DEF_DOWN);
+  delay(DELAY);
+  DF_femur.write(DEF_UP);
+  B_femur.write(ABC_UP);
+  delay(DELAY);
+};
+
+void l3() {
+  A_coxa.write(COXA_CW);
+  C_coxa.write(COXA_CW);
+  E_coxa.write(COXA_CW);
+  DF_coxa.write(COXA_CCW);
+  B_coxa.write(COXA_CCW);
+  delay(DELAY);
+};
+void l4() {
+  DF_femur.write(DEF_DOWN);
+  B_femur.write(ABC_DOWN);  
+  delay(DELAY);
+  A_femur.write(ABC_UP);
+  C_femur.write(ABC_UP);
+  E_femur.write(DEF_UP);
+  delay(DELAY);
+};
+
+void r1() { 
+  A_coxa.write(COXA_CW);
+  C_coxa.write(COXA_CW);
+  E_coxa.write(COXA_CW);
+  DF_coxa.write(COXA_CCW);
+  B_coxa.write(COXA_CCW);
+  delay(DELAY);
+};
+void r2() { 
+  A_femur.write(ABC_DOWN);
+  C_femur.write(ABC_DOWN);
+  E_femur.write(DEF_DOWN);
+  delay(DELAY);
+  DF_femur.write(DEF_UP);
+  B_femur.write(ABC_UP);
+  delay(DELAY);
+};
+
+void r3() {
+  A_coxa.write(COXA_CCW);
+  C_coxa.write(COXA_CCW);
+  E_coxa.write(COXA_CCW);
+  DF_coxa.write(COXA_CW);
+  B_coxa.write(COXA_CW);
+  delay(DELAY);
+};
+void r4() {
+  DF_femur.write(DEF_DOWN);
+  B_femur.write(ABC_DOWN);
+  delay(DELAY);  
+  A_femur.write(ABC_UP);
+  C_femur.write(ABC_UP);
+  E_femur.write(DEF_UP);
+  delay(DELAY);
+};
+
+void start(){
+  tibia();
+  A_femur.write(ABC_DOWN);
+  C_femur.write(ABC_DOWN);
+  E_femur.write(DEF_DOWN);
+  DF_femur.write(DEF_DOWN);
+  B_femur.write(ABC_DOWN);
+  C_coxa.write(COXA_S-30);
+  A_coxa.write(COXA_S+30);
+  E_coxa.write(COXA_S);  
+  DF_coxa.write(COXA_S);
+  B_coxa.write(COXA_S);
+}
